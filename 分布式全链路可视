@@ -1,0 +1,439 @@
+# 分布式全链路可视
+
+## MDC
+
+在分布式系统里说的 **MDC**，通常是指 **Mapped Diagnostic Context**。这是日志框架（如 Log4j、SLF4J + Logback）里提供的一种机制，用来在日志中携带上下文信息。
+
+------
+
+### 核心概念
+
+- **MDC 是一个线程本地（ThreadLocal）的上下文 Map**
+  你可以在业务代码里往 MDC 里放一些键值对，比如 `traceId=12345`、`userId=6789`。
+- 日志框架在打印日志时，可以自动把这些上下文信息插入日志格式里，而不需要每个日志语句都手动拼接。
+
+------
+
+### 在分布式系统里的作用
+
+1. **链路追踪**
+   在分布式系统中，一个请求可能会跨多个微服务。为了能从日志中串起整个调用链，通常会生成一个全局唯一的 **TraceId**，然后放到 MDC 里。这样每条日志都会带上这个 TraceId，就能方便地从海量日志里筛选出一条完整的调用链。
+2. **上下文传递**
+   比如在用户请求的入口处，把用户 ID、会话 ID 等放进 MDC，那么后续所有处理这个请求的日志都会带上这些信息。
+3. **问题定位**
+   出现错误时，通过 MDC 打印的 traceId，可以快速查到该请求在所有微服务中的完整轨迹，方便排查。
+
+------
+
+### 实现细节与注意点
+
+- **线程隔离**：MDC 是基于 `ThreadLocal` 实现的，不同线程的 MDC 数据互不影响。
+  但在分布式系统/异步编程（如线程池、Reactive、消息队列）中，需要**手动传递或拷贝 MDC**，否则会丢失上下文。
+- **常见做法**：
+  - 在请求入口（如 Spring MVC 的 Filter、Interceptor）生成 traceId 并写入 MDC。
+  - 在日志配置（logback.xml/log4j2.xml）里使用 `%X{traceId}` 占位符输出。
+  - 在 RPC 或消息中间件调用时，把 traceId 传递给下游服务，下游再写入 MDC。
+
+
+
+# 状态机
+
+## 必需的核心概念
+
+1. **状态 (State)** - 系统可能处于的各种情况
+2. **事件 (Event)** - 触发状态转换的外部输入
+3. **转换 (Transition)** - 状态之间的转移规则
+4. **动作 (Action)** - 状态转换时执行的操作
+
+
+
+
+
+# 事件驱动架构
+
+## 进程内事件驱动
+
+进程内的事件驱动模型，是指**在同一个 JVM 进程内通过事件发布/监听机制实现模块间的解耦通信**。它的核心是：**某个模块发出事件，其他模块可以异步或同步地响应这个事件，而不是直接调用对方的方法**。
+
+---
+
+### ✅ 进程内事件驱动的基本实现机制
+
+在 Java 中，进程内的事件驱动通常基于 **观察者模式（Observer Pattern）**，加上 **事件总线（Event Bus）** 或 **发布-订阅（Pub/Sub）机制** 实现。
+
+常见实现方式：
+
+- Java 自带的 `java.util.Observable`（已过时，不推荐）
+- **Spring 事件机制（推荐）**
+- Google Guava 的 `EventBus`
+- Reactor 模式（如 Project Reactor）
+- 自己写一个事件总线（用 `Map<Class<?>, List<Listener>>`）
+
+---
+
+### ✅ Spring 提供的进程内事件驱动能力
+
+Spring 提供了**完整的进程内事件驱动支持**，核心接口和类如下：
+
+| 组件                          | 说明                        |
+| ----------------------------- | --------------------------- |
+| `ApplicationEvent`            | 自定义事件的基类            |
+| `ApplicationListener<T>`      | 事件监听器接口              |
+| `@EventListener`              | 注解式监听器（Spring 4.2+） |
+| `ApplicationEventPublisher`   | 事件发布器                  |
+| `ApplicationEventMulticaster` | 真正的事件分发器            |
+| `@Async` + `@EnableAsync`     | 实现异步事件监听            |
+
+---
+
+### ✅ Spring 事件驱动的一个最小示例
+
+#### 1. 定义事件
+
+```java
+public class UserCreatedEvent extends ApplicationEvent {
+    private final String username;
+
+    public UserCreatedEvent(Object source, String username) {
+        super(source);
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+}
+```
+
+#### 2. 发布事件
+
+```java
+@Service
+public class UserService {
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
+    public void createUser(String username) {
+        System.out.println("注册用户：" + username);
+        publisher.publishEvent(new UserCreatedEvent(this, username));
+    }
+}
+```
+
+#### 3. 监听事件（同步）
+
+```java
+@Component
+public class EmailService {
+
+    @EventListener
+    public void handleUserCreated(UserCreatedEvent event) {
+        System.out.println("发送欢迎邮件给：" + event.getUsername());
+    }
+}
+```
+
+#### 4. 异步监听（可选）
+
+```java
+@EventListener
+@Async
+public void handleUserCreatedAsync(UserCreatedEvent event) {
+    // 异步执行，比如发短信、写日志、同步缓存等
+}
+```
+
+> ⚠️ 使用 `@Async` 需要在配置类上加 `@EnableAsync`。
+
+---
+
+### ✅ Spring 事件机制的优势
+
+- 解耦：发布者和监听者互不依赖
+- 灵活：支持同步、异步、泛型事件、条件监听
+- 已经集成在 Spring 容器中，开箱即用
+- 支持事务事件（`@TransactionalEventListener`）
+
+---
+
+### ✅ 总结一句话
+
+> **Spring 的事件机制就是你想要的“进程内事件驱动”的标准答案** —— 轻量、强大、解耦、支持异步、完全集成。
+
+---
+
+如果你有更高阶的需求（如批量处理、背压、流式处理），可以考虑 **Reactor** 或 **Akka**，但那已经超出“进程内简单事件驱动”的范畴了。
+
+
+
+## **Spring 事件驱动的日志链路追踪（TraceId）**
+
+要实现 **Spring 事件驱动的日志链路追踪（TraceId）**，你需要确保：
+
+> **无论事件是同步还是异步发布/监听，都能把 TraceId 从主线程正确传递到事件处理线程。**
+
+---
+
+### ✅ 技术选型
+
+- **日志框架**：SLF4J + Logback / Log4j2（推荐 Logback）
+- **链路追踪**：
+  - 如果使用 Spring Cloud Sleuth，它会自动搞定 traceId/spanId 的传递
+  - 如果没有 Sleuth，自己用 MDC + TaskDecorator 手动传播
+
+---
+
+### ✅ 目标：日志里能看到统一 traceId
+
+**日志格式示例**：
+
+```
+2024-06-01 12:00:01.123 [INFO] [user-service,123e4567-e89b-12d3-a456-426614174000] - 注册用户：alice
+2024-06-01 12:00:01.234 [INFO] [user-service,123e4567-e89b-12d3-a456-426614174000] - 发送欢迎邮件给：alice
+```
+
+---
+
+### ✅ 实现方案一：Spring Cloud Sleuth（推荐）
+
+#### 1. 添加依赖（Spring Boot 3+）
+
+```xml
+<dependency>
+  <groupId>org.springframework.cloud</groupId>
+  <artifactId>spring-cloud-starter-sleuth</artifactId>
+</dependency>
+```
+
+#### 2. 配置日志格式
+
+```xml
+<!-- logback-spring.xml -->
+<encoder>
+  <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] [%X{traceId:-}, %X{spanId:-}] - %msg%n</pattern>
+</encoder>
+```
+
+#### 3. 使用
+
+- 主线程发布事件
+- 监听方 `@Async` 或同步监听，Logback 自动带上 traceId/spanId
+
+**无需额外代码！Sleuth 自动传递 traceId。**
+
+---
+
+### ✅ 实现方案二： Sleuth，自己用 MDC 手动传递
+
+#### 1. 给每条请求生成 traceId
+
+```java
+@Component
+public class TraceFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
+        String traceId = UUID.randomUUID().toString();
+        MDC.put("traceId", traceId);
+        try {
+            chain.doFilter(req, res);
+        } finally {
+            MDC.remove("traceId");
+        }
+    }
+}
+```
+
+#### 2. 让异步事件也能拿到 traceId
+
+定义 `TaskDecorator`：
+
+```java
+public class MdcTaskDecorator implements TaskDecorator {
+    @Override
+    public Runnable decorate(Runnable runnable) {
+        Map<String, String> contextMap = MDC.getCopyOfContextMap();
+        return () -> {
+            MDC.setContextMap(contextMap);
+            try {
+                runnable.run();
+            } finally {
+                MDC.clear();
+            }
+        };
+    }
+}
+```
+
+注册异步线程池：
+
+```java
+@EnableAsync
+public class AsyncConfig {
+    @Bean
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setTaskDecorator(new MdcTaskDecorator());
+        executor.initialize();
+        return executor;
+    }
+}
+```
+
+#### 3. 日志格式
+
+```xml
+<encoder>
+  <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] [%X{traceId}] - %msg%n</pattern>
+</encoder>
+```
+
+---
+
+### ✅ 结合事件发布的建议
+
+```java
+publisher.publishEvent(new UserCreatedEvent(this, username));
+```
+
+无论是同步监听：
+
+```java
+@EventListener
+public void handle(UserCreatedEvent e) {
+    log.info("发送欢迎邮件给：{}", e.getUsername()); // 自动带 traceId
+}
+```
+
+还是异步监听：
+
+```java
+@EventListener
+@Async
+public void handle(UserCreatedEvent e) {
+    log.info("异步发送通知给：{}", e.getUsername()); // traceId 也能传递
+}
+```
+
+---
+
+### ✅ 小结对比
+
+| 方式                | traceId 自动传递 | 异步支持 | 侵入性 | 说明                 |
+| ------------------- | ---------------- | -------- | ------ | -------------------- |
+| Spring Cloud Sleuth | ✅                | ✅        | 极低   | 推荐                 |
+| 手动 MDC            | ✅（需装饰器）    | ✅        | 中等   | 无依赖，适合简单场景 |
+
+---
+
+### ✅ 一句话结论
+
+> **用 Spring Cloud Sleuth，最省事；不想引入依赖用 MDC + TaskDecorator 手写异步 traceId 传递。**
+
+
+
+# WebFlux 框架学习
+
+
+
+## 如何理解Flux和Mono？
+
+[Flux和Mono是Reactor库中的两种数据类型，它们都实现了Publisher接口，可以表示异步的数据流](https://www.baeldung.com/java-reactor-flux-vs-mono)。
+
+在 WebFlux 中，`Mono` 和`Flux` 是非阻塞的写法，只有这样，你才能发挥 WebFlux **非阻塞 + 异步**的特性。
+
+[Flux可以发出0到N个元素，可能是有限的，也可能是无限的。Flux可以看作是一个响应式的集合或流，它可以处理多个值的情况](https://www.baeldung.com/java-reactor-flux-vs-mono)。例如：
+
+```java
+//创建一个Flux，发出1到5这五个数字
+Flux<Integer> flux = Flux.range(1, 5);
+
+//订阅Flux，并打印每个元素
+flux.subscribe(System.out::println);
+```
+
+[Mono可以发出0到1个元素，也就是最多只有一个值。Mono可以看作是一个响应式的Optional，它可以处理单个值或空值的情况](https://www.baeldung.com/java-reactor-flux-vs-mono)。例如：
+
+```java
+//创建一个Mono，发出"Hello"这个字符串
+Mono<String> mono = Mono.just("Hello");
+
+//订阅Mono，并打印元素
+mono.subscribe(System.out::println);
+```
+
+[Flux和Mono都支持各种操作符，可以对数据流进行转换、过滤、组合、错误处理等操作。它们也都支持反压机制，可以让消费者控制生产者的数据发送速率](https://www.baeldung.com/reactor-core)[2](https://www.baeldung.com/reactor-core)[4](https://www.cnblogs.com/felordcn/p/13747262.html)。
+
+
+
+
+
+## Reactive Stream规范的目的是什么？
+
+[Reactive Stream规范的目的是提供一个异步流处理的标准，它具有非阻塞的背压机制](https://www.reactive-streams.org/)[1](https://www.reactive-streams.org/)[。背压机制是指接收方可以控制发送方的数据传输速率，以避免接收方被过多的数据所淹没](https://www.reactive-streams.org/)[1](https://www.reactive-streams.org/)[。Reactive Stream规范定义了四个接口，分别是**Publisher**，**Subscriber**，**Subscription**和**Processor**](https://www.baeldung.com/java-9-reactive-streams)[2](https://www.baeldung.com/java-9-reactive-streams)[3](https://zhuanlan.zhihu.com/p/41342507)。
+
+
+
+
+
+## WebFlux 与这个Reactive Stream规范的关系是？使用WebFlux需要了解的特性
+
+WebFlux是Spring框架中的一个响应式栈的web框架，它基于Reactive Streams API运行在非阻塞的服务器上，如Netty，Undertow和Servlet容器[1](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)。WebFlux需要Reactor作为核心依赖，但它可以通过Reactive Streams与其他响应式库互操作[1](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[。WebFlux的API接受一个普通的Publisher作为输入，并将其内部适配为一个Reactor类型，然后使用它，并返回一个Flux或Mono作为输出](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)。
+
+使用WebFlux的时候，有些必须要了解的特性有：
+
+- [WebFlux支持两种编程模型：基于注解的控制器和基于函数的端点](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[1](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[。基于注解的控制器与Spring MVC类似，但使用了响应式类型作为方法参数和返回值](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[1](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[。基于函数的端点使用Java 8的lambda表达式来定义路由和处理逻辑](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[1](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)。
+- [WebFlux提供了一个响应式的WebClient，用于从非阻塞的客户端访问HTTP和WebSocket服务](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[1](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[。WebClient可以发送和接收各种数据格式，如JSON，XML，Protobuf等，并支持流式传输和服务器推送](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[1](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)。
+- [WebFlux支持Reactor Netty作为默认的运行时，但也可以运行在任何支持Servlet 3.1非阻塞I/O的容器上](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[1](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html)[。WebFlux还可以与RSocket协议集成，实现双向通信和背压控制](https://spring.io/reactive/)[2](https://spring.io/reactive/)。
+
+
+
+
+
+## 场景问题
+
+------
+
+### 一、 Spring MVC（阻塞式）与 WebFlux（响应式/非阻塞）在高并发下碰到**后端数据库压力时**的行为
+
+- 微服务用 Spring MVC 或 WebFlux 开发 REST API。
+- 接收大量并发请求。
+- 数据库（如 MySQL/PostgreSQL）压力变大（连接/响应慢，甚至阻塞）。
+- 期待 REST API 有良好并发/吞吐表现。
+
+#### **日志/诊断现象**
+
+- WebFlux 服务线程数占用低（event loop线程池没压力）。
+- TPS 到数据库极限，直到数据库处理不过来为瓶颈，接口响应时间取决于底层数据库速度。
+- 在服务端不会像 MVC 一样堆满“工作线程”，不会因线程池耗尽拒绝请求，但等待时间还是会很长。
+
+#### 两者差异表
+
+|          |       Spring MVC        |                        Spring WebFlux                        |
+| :------: | :---------------------: | :----------------------------------------------------------: |
+| 并发模型 |    每请求占用一线程     |                    非阻塞极少线程事件驱动                    |
+| 数据库慢 | 线程被绑死，服务易拒绝  |                     线程不被占用但响应慢                     |
+| 队列现象 |   请求堆积、超时、503   |                      请求能进来但处理慢                      |
+|  扩展性  |    受线程池极大限制     |                能处理更多并发（取决于数据库）                |
+| 故障表现 | 服务端 TPS 降、线程耗尽 |                 TPS 顶到数据库能力、响应变慢                 |
+| 响应时长 | 线程池满则超时/拒绝请求 | 取决于数据库能力，服务端不会超时拒绝（但客户端可能因超时断开） |
+
+1、新增会话管理
+
+对需要和业务多轮交互对话的工作流，进行工作流实例的会话管理
+
+a)会话状态管理：初始化/进行中/等待用户输入/已结束/异常
+
+b)会话缓存管理：根据该工作流实例状态进行分布式缓存管理使用，默认5分钟超时
+
+c)会话并发管理：
+
+a.防呆设计，避免会话重复请求，做好提示
+
+
+
+
+
+
+
+## 没有银弹
