@@ -1,0 +1,70 @@
+<svg viewBox="0 0 680 470" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, sans-serif" width="680" height="470">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#57606a"/></marker>
+    <marker id="arR" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#cf222e"/></marker>
+  </defs>
+  <style>
+    .t{font-size:12.5px;fill:#1f2328;font-weight:600}
+    .s{font-size:10.5px;fill:#57606a}
+    .m{font-size:11px;fill:#57606a;font-family:ui-monospace,monospace}
+  </style>
+  <rect x="0" y="0" width="680" height="470" fill="#ffffff"/>
+
+  <text x="24" y="28" class="t">多核“同时”执行 CAS 会发生什么</text>
+
+  <!-- 两个核心 -->
+  <rect x="30" y="48" width="180" height="52" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+  <text x="120" y="70" text-anchor="middle" class="t">Core 0</text>
+  <text x="120" y="88" text-anchor="middle" class="m">lock cmpxchg [addr], 6, 5</text>
+
+  <rect x="30" y="118" width="180" height="52" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+  <text x="120" y="140" text-anchor="middle" class="t">Core 1</text>
+  <text x="120" y="158" text-anchor="middle" class="m">lock cmpxchg [addr], 6, 5</text>
+
+  <text x="120" y="188" text-anchor="middle" class="s">两个核心都在同一时刻发射指令</text>
+  <text x="120" y="204" text-anchor="middle" class="s" fill="#cf222e">但“同一时刻”由缓存一致性协议仲裁</text>
+
+  <!-- 箭头 -->
+  <line x1="215" y1="74" x2="290" y2="128" stroke="#57606a" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="215" y1="144" x2="290" y2="140" stroke="#57606a" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- 仲裁点 -->
+  <rect x="295" y="86" width="180" height="72" rx="8" fill="#fff8c5" stroke="#bf8700"/>
+  <text x="385" y="108" text-anchor="middle" class="t">缓存行独占权仲裁</text>
+  <text x="385" y="126" text-anchor="middle" class="s">MESI：必须拿到 Exclusive/Modified</text>
+  <text x="385" y="142" text-anchor="middle" class="s">后到者使前者的缓存行失效</text>
+
+  <line x1="475" y1="122" x2="545" y2="122" stroke="#57606a" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="510" y="114" text-anchor="middle" class="s">串行化点</text>
+
+  <!-- 结果 -->
+  <rect x="550" y="60" width="110" height="52" rx="8" fill="#d1f8d5" stroke="#57ab5a"/>
+  <text x="605" y="82" text-anchor="middle" class="t">Core 0 成功</text>
+  <text x="605" y="100" text-anchor="middle" class="s">5 → 6</text>
+
+  <rect x="550" y="130" width="110" height="52" rx="8" fill="#ffebe9" stroke="#cf222e"/>
+  <text x="605" y="152" text-anchor="middle" class="t">Core 1 失败</text>
+  <text x="605" y="170" text-anchor="middle" class="s">读到6≠5，不交换</text>
+
+  <!-- 底部：哪些是原子的 -->
+  <rect x="30" y="228" width="630" height="90" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="46" y="250" class="t">关键边界：只有那条 CAS 指令是原子的，整个 do-while 不是</text>
+  <text x="46" y="272" class="m">读旧值 (5) ── 计算 (6) ── CAS(addr,6,5)   ← 前两步各核心可并行，第三步由硬件串行</text>
+  <text x="46" y="294" class="s">两个线程读到相同的旧值 5 是完全正常的；决定胜负的是 CAS 那一步，恰好一个成功，另一个失败重试</text>
+  <text x="46" y="312" class="s" fill="#cf222e">所以不会“同时修改成功”——硬件保证全序，不存在两个都赢</text>
+
+  <!-- 底部：为什么还能并行执行 -->
+  <rect x="30" y="334" width="300" height="112" rx="8" fill="#ddf4ff" stroke="#0969da"/>
+  <text x="46" y="356" class="t">为什么不能两个都成功</text>
+  <text x="46" y="376" class="s">CAS 语义 = 比较成功才写入。</text>
+  <text x="46" y="393" class="s">Core 1 到达时值已是 6，比较 6≠5 失败，</text>
+  <text x="46" y="410" class="s">不写入 → 返回 false → 外层循环重试。</text>
+  <text x="46" y="432" class="s">这就是“无锁”的代价：失败者自旋。</text>
+
+  <rect x="350" y="334" width="310" height="112" rx="8" fill="#fbefff" stroke="#8250df"/>
+  <text x="366" y="356" class="t">为什么高竞争会烧CPU</text>
+  <text x="366" y="376" class="s">每次失败要重新拿缓存行独占权（RFO），</text>
+  <text x="366" y="393" class="s">缓存行在两核间来回弹（ping-pong），</text>
+  <text x="366" y="410" class="s">失败者既没产出又占满总线/缓存带宽。</text>
+  <text x="366" y="432" class="s">→ 分段（LongAdder）或干脆挂起等锁。</text>
+</svg>

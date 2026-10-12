@@ -82,7 +82,7 @@ hashcode：哈希码也称散列码。该方法返回一个int整数，用于确
 
 #### hashcode()和equals()方法的关系
 
-![img](https://yu-xiong-yu.gitee.io/typora-img/Img/v2-1ff488ef57f96de4066599f45be04d80_720w.jpg)
+![img](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/v2-1ff488ef57f96de4066599f45be04d80_720w.jpg)
 
 思考在上述图中的规则原因。
 
@@ -129,7 +129,7 @@ Java语言支持的8种基本数据类型是：
 - boolean
 - char
 
-![img](https://yu-xiong-yu.gitee.io/typora-img/Img/20180905141955842)
+![img](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/20180905141955842)
 
 Java 基本数据类型存储位置：https://blog.csdn.net/ncuzengxiebo/article/details/83745065
 
@@ -141,7 +141,7 @@ Java 基本数据类型存储位置：https://blog.csdn.net/ncuzengxiebo/article
 
 数组同样也是引用数据类型，数组类型的存储位置：
 
-![image-20210802150556202](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20210802150556202.png)
+![image-20210802150556202](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20210802150556202.png)
 
 
 
@@ -234,7 +234,7 @@ https://blog.csdn.net/weixin_47067712/article/details/114384574?spm=1001.2101.30
 
 #### 内部类
 
-![nbl0](https://yu-xiong-yu.gitee.io/typora-img/Img/nbl0.png)
+![nbl0](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/nbl0.png)
 
  
 
@@ -242,7 +242,7 @@ https://blog.csdn.net/weixin_47067712/article/details/114384574?spm=1001.2101.30
 
 #### Java异常处理
 
-![img](https://yu-xiong-yu.gitee.io/typora-img/Img/exception-hierarchy.png)
+![img](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/exception-hierarchy.png)
 
 ##### Error
 
@@ -346,7 +346,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 - 通过字面量的方式，即`String = "abc";`的形式（区别于new给一个字符串赋值，String变量引用指向堆中String对象，堆对象再指向字符串常量池中对象；)定义的字符串值声明在字符串常量池中，引用直接指向。
 - intern方法。当调用 intern方法时，**如果池已经包含一个等于此String对象的字符串（用equals(oject)方法确定），则返回池中的字符串。否则，将此String对象添加到池中，并返回此String对象的引用**
 
-![image-20210802113904499](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20210802113904499.png)
+![image-20210802113904499](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20210802113904499.png)
 
 面试题一：String s = new String("abc");方式创建对象，在内存中创建了几个对象？
 答：两个。一个是堆空间中new结构，另一个是char[]对应的常量池中的数据："abc"。
@@ -393,7 +393,7 @@ public class StringTest {
 
 4.相对第1点来说，如果不是使用常量拼接，则还是会调用StringBuilder方法创建对象并拼接。如下图
 
-![image-20211031154257493](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20211031154257493.png)
+![image-20211031154257493](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20211031154257493.png)
 
 #### 常用方法
 
@@ -440,7 +440,7 @@ public class StringTest {
 
 intern方法是String类中的native方法（本地方法）。**它的作用是保证该字符串返回的形式是其在字符串常量池中的直接引用！不管调用的String形式是怎样。**如果常量池中没有该字符串则会在其中创建。
 
-![image-20211031160043425](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20211031160043425.png)
+![image-20211031160043425](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20211031160043425.png)
 
 ```java
 public class testString {
@@ -488,7 +488,7 @@ StringBuffer 是线程安全，效率较低。**StringBuilder非线程安全，�
 
 Java集合类库将接口与实现分离
 
-![image-20210713144930037](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20210713144930037.png)
+![image-20210713144930037](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20210713144930037.png)
 
 集合类的基本接口是 Collection 接口,这个接口有两个基本方法:
 
@@ -957,7 +957,7 @@ public static Class getPersonClass3() {
 
 #### 3.Class类的常用方法
 
-![image-20210626174945097](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20210626174945097.png)
+![image-20210626174945097](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20210626174945097.png)
 
 new Instance();
 
@@ -1165,7 +1165,7 @@ public enum State {
 
 ![image-20220610181148272](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/202206101811409.png)
 
-![image-20210922213010631](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20210922213010631.png)
+![image-20210922213010631](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20210922213010631.png)
 
 详细
 
@@ -1244,7 +1244,7 @@ Java 不⽀持多重继承，因此继承了 Thread 类就⽆法继承其它类�
 
 Future接口声明了如下方法：
 
-![image-20211026131242694](http://yu-xiong-yu.gitee.io/typora-img//Img/image-20211026131242694.png)
+![image-20211026131242694](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20211026131242694.png)
 
 这些方法的作用分别是：
 
@@ -1260,7 +1260,7 @@ Future接口声明了如下方法：
 
 下图是FutureTask类的继承关系：
 
-![image-20211026130157248](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20211026130157248-1635224520194.png)
+![image-20211026130157248](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20211026130157248-1635224520194.png)
 
 使用Callable接口得到返回值，结合FutureTask查看或控制call方法执行进度。
 
@@ -1365,7 +1365,7 @@ https://blog.csdn.net/qq_20009015/article/details/88630778
 
 Executor顶级接口与其继承和实现类
 
-![图片](https://yu-xiong-yu.gitee.io/typora-img/Img/640)
+![图片](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/640)
 
 
 
@@ -1399,7 +1399,7 @@ Java里面线程池的顶级接口是Executor，但是严格意义上讲Executor
 
 ​	点进Executors的源码里可以看到，上述的几个线程池都是通过ThreadPoolExecutor类来完成创建的。ThreadPoolExecutor继承了抽象类AbstractExecutorService，AbstractExecutorService又实现了ExecutorService接口。故可验证上述结论**“返回的线程池都实现了ExecutorService接口”**。
 
-![image-20211029114322512](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20211029114322512.png)
+![image-20211029114322512](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20211029114322512.png)
 
 java.uitl.concurrent.ThreadPoolExecutor类是线程池中最核心的一个类。在ThreadPoolExecutor类中提供了四个构造方法：
 
@@ -1446,7 +1446,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 
 ##### 执行流程
 
-![img](https://yu-xiong-yu.gitee.io/typora-img/Img/v2-19ba0715a5cf7c0ef4f621f7ba95415a_720w.jpg)
+![img](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/v2-19ba0715a5cf7c0ef4f621f7ba95415a_720w.jpg)
 
 参考：https://www.cnblogs.com/qingquanzi/p/8146638.html
 
@@ -1558,7 +1558,7 @@ CAS机制当中使用了3个基本操作数：**内存地址V**，**旧的预期
 
 参考：https://blog.csdn.net/qq_35571554/article/details/82892806
 
-![img](https://yu-xiong-yu.gitee.io/typora-img/Img/c2fdfc039245d688e61add19d69dad18d31b24dc-1638288959698.png)
+![img](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/c2fdfc039245d688e61add19d69dad18d31b24dc-1638288959698.png)
 
 
 
@@ -1592,6 +1592,206 @@ CAS虽然很高效解决了原子操作问题，但是CAS仍然存在问题：
 
 - 循环时间长，开销很大：就是如果CAS失效，就会一直进行尝试，当时间过长仍然失败，那么就会给CPU带来很大的开销。
 - 只能保证一个共享变量的原子操作：当对一个变量执行操作时，可以使用循环 CAS 的方式来保证原子操作，但对多个变量操作时，CAS 目前无法直接保证操作的原子性。可以这样解决：使用互斥锁来保证原子性、将多个变量封装成对象，通过 AtomicReference 来保证原子性。
+
+
+
+##### CAS 的应用场景
+
+CAS 分两种语境，本质是一回事（先比较、再交换，不加锁，失败重试或放弃）：
+
+**① Java/CPU 层（默认问这个）**
+
+| 场景 | CAS 在干什么 |
+|---|---|
+| `AtomicInteger` 等原子类 | `incrementAndGet` = 自旋 CAS 更新 value，无锁替代 `synchronized++` |
+| **AQS**（JUC 全家桶地基） | `compareAndSetState` 抢同步状态；CLH 队列入队出队也靠 CAS——ReentrantLock、CountDownLatch、线程池都在这上面 |
+| `ConcurrentHashMap` | 初始化表、插入空桶头节点用 CAS+自旋，命中已有桶才 synchronized |
+| `LongAdder` | CAS 竞争激烈时退化为分段 Cell 数组，热点的优化版 |
+| 自旋锁 / `ThreadLocalRandom` 种子更新 | 失败重试的轻量同步 |
+
+**② 应用层的乐观锁思想**
+
+- **数据库乐观锁**：`UPDATE ... SET version = version + 1 WHERE id = ? AND version = ?`，影响行数为 0 说明被别人改过，重试
+- **Redis WATCH + MULTI**：EXEC 前 key 被改则事务作废，客户端重试
+- **配置热同步的 version 兜底轮询**：本地 version 与 Redis 中 version 比对，不一致才拉全量——CAS 思想，天然免疫 ABA
+
+**③ 三个必被追问的点**
+
+1. **ABA 问题**：A→B→A，CAS 认为“没变”其实变过。解法：版本号（`AtomicStampedReference` / DB 的 version 字段）
+2. **自旋开销**：高竞争下空转烧 CPU（见下节）
+3. **只能保证单个变量**：多变量一致性搞不定 → `AtomicReference` 装不可变对象，或上锁
+
+> 选型一句话：CAS 适合**低冲突、临界区小**的场景；冲突激烈就退化成空转，该分段（LongAdder）或上锁。
+
+
+
+##### 自旋开销：高竞争下 CAS 空转烧 CPU 是什么意思
+
+CAS 失败不会阻塞等待，只能**原地重试（自旋）**：
+
+```java
+do {
+    旧值 = 读共享变量;      // 不加锁
+    新值 = 旧值 + 1;
+} while (!CAS(变量, 旧值, 新值));  // 失败就再来一遍
+```
+
+100 个线程同时对同一个 `AtomicInteger` 做 `incrementAndGet`：每次只有一个 CAS 成功，**99 个失败**；失败的线程不让出 CPU，立刻重读、重算、再 CAS，又被挤掉……持续几轮之内**什么有效工作都没做，纯烧 CPU**——这就是“空转”。
+
+对比：`synchronized` 失败会挂起（不烧 CPU，但有上下文切换与唤醒延迟）。
+
+**根本原因**：每次 CAS 失败都要重新通过缓存一致性协议（MESI）去抢缓存行的独占权（RFO, Read For Ownership），缓存行在核心之间来回弹（**cache line ping-pong**），失败者既没产出又占满缓存/总线带宽。
+
+**解法**：低冲突继续用 CAS；高冲突 → 分段（LongAdder）或干脆挂起等锁（AQS 的 park）。
+
+
+
+##### AtomicInteger 的 incrementAndGet 是怎么实现的
+
+```java
+public final int incrementAndGet() {
+    return U.getAndAddInt(this, VALUE, 1) + 1;   // VALUE 是 value 字段的内存偏移量
+}
+
+// Unsafe.getAndAddInt 内部：
+do {
+    v = getIntVolatile(o, offset);                      // 读当前值
+} while (!weakCompareAndSetInt(o, offset, v, v + 1));   // 值还是 v 就改成 v+1，否则重读重试
+return v;
+```
+
+即：把非原子的 `i++`（读-改-写三步）换成**一条 CPU 原子指令**（x86 上是 `lock cmpxchg`），再套一层自旋重试。多线程同时调用时只有一个成功，其余重读再试。
+
+*这也是为什么它不需要锁——原子性来自硬件，循环只是处理“这次没抢到”。*
+
+
+
+##### 多核下两个线程会不会同时改成功？（CAS 硬件原理）
+
+**不会。**必须先分清哪部分是原子的、哪部分不是：
+
+```java
+do {
+    旧值 = 读共享变量;   // ① 普通读，各核心可并行，都读到 5 很正常
+    新值 = 旧值 + 1;     // ② 普通计算，可并行，都算出 6
+} while (!CAS(变量, 旧值, 新值));  // ③ 只有这一步是原子的
+```
+
+- ①② 确实可以“同时”发生（两个线程都读到 5、都算出 6）
+- ③ 才是胜负判定：Core 0 先拿到缓存行独占权写成 6；Core 1 到达时读到 6，`比较 6 ≠ 5` 失败，**不写入**，返回 false 去重试
+- 所以“旧值相同”不冲突，冲突由 CAS 那一步解决
+
+**为什么“同时”也只能有一个赢**：
+
+1. x86 的 CAS 编译成 `lock cmpxchg`，`lock` 前缀在硬件层锁定**缓存行**（不是锁总线）
+2. 要改这行必须先通过 **MESI 协议**把缓存行拿到 **Exclusive/Modified** 状态；拿到后其他核的副本失效
+3. 这个过程由缓存一致性控制器仲裁，**给所有核心一个全局全序**——即使两条指令同一纳秒发射，也是先到者赢、后到者比较失败
+
+> 结论："同一时刻"在硬件层被缓存一致性协议这个**串行化点**消解了，不存在两个都成功。原子性的来源是 CPU 指令 + 缓存一致性协议，不是软件循环。
+
+![多核CAS与缓存一致性仲裁](images/cas-multicore-cache-coherence.png)
+
+
+
+##### 为什么"都定义成 AtomicInteger"也解决不了多变量一致性
+
+因为 CAS 只保证**单个变量**的读-改-写原子，不保证**多个变量之间**的一致性。两个原子变量之间永远存在一个**别人能看到的中间状态**。
+
+```java
+a.decrementAndGet();   // ① a 扣 100
+// ← 就在这里，另一个线程读到 a 少了 100，但 b 还没加
+b.incrementAndGet();   // ② b 加 100
+```
+
+线程 B 在 ①② 之间读到 `a + b`，会发现**总金额凭空少了 100**。每一格都原子，但“扣 a 且加 b”这个**复合操作不是原子的**。
+
+第二个更隐蔽的问题：**多变量读也不是一致快照**。
+
+```java
+int x = a.get();
+int y = b.get();   // 这两行之间别人可能已经改了，读到的不是同一时刻的视图
+```
+
+**正确解法（按优先级）**：
+
+| 方案 | 做法 | 适用 |
+|---|---|---|
+| **AtomicReference 装不可变对象** | 把 a、b 封进 `record Account(int a, int b)`，一次 CAS 换整个快照 | 首选，锁自由且读到一致视图 |
+| **锁**（synchronized / ReentrantLock） | 把复合操作圈起来 | 逻辑复杂、临界区稍长时更清晰 |
+| LongAdder / 分段 | 只解决单变量热点，不解决一致性 | 纯计数场景 |
+
+> 面试话术：原子类保证的是**单个变量的读-改-写原子**，不是**多个变量组成的业务不变量**。要跨变量一致，就把它们合成不可变对象放进 AtomicReference 做一次 CAS，或者直接用锁。
+
+
+
+##### 临界区是什么意思
+
+**临界区 = 访问共享资源、必须“同一时刻只能有一个线程执行”的那段代码。** 它不是语法概念，而是**由自己判定的逻辑边界**：从共享变量被**读**开始，到被**写**结束。
+
+```java
+private int stock = 100;
+
+public void buy() {
+    synchronized (this) {   // 锁的边界 = 临界区边界
+        if (stock > 0) stock--;   // 读+判断+写，整段才是临界区
+    }
+}
+```
+
+| 要点 | 说明 |
+|---|---|
+| 逻辑判定，非语法 | 同一个方法里可能只有两三行是临界区，别把整个方法锁住 |
+| **越小越好** | 锁粒度 = 临界区大小；锁里放 IO/远程调用 = 灾难 |
+| 锁的边界要恰好包住 | 太小 → 保护不全仍并发；太大 → 无谓串行，吞吐下降 |
+| 与 CAS 的关系 | CAS 是**无锁化临界区**：把“读-判断-写”合成一次原子指令，消除中间态 |
+| 分布式场景 | 跨进程用 Redis Lua 或分布式锁，本质也是让临界区变原子 |
+
+> 选型链：能缩到单变量读-改-写 → CAS；跨变量/逻辑复杂 → 锁；跨进程 → Redis Lua / 分布式锁。
+
+
+
+##### AtomicReference 的应用场景
+
+核心一句话：**AtomicReference 保证的是“一个引用的一次替换是原子的”**——凡是“要么整体换掉、要么什么都不动”的场景都适用。
+
+**① 复合状态快照（最主要的用法）**
+
+```java
+record RoutingTable(Map<String, Instance> instances, long version) {}   // 不可变
+
+private final AtomicReference<RoutingTable> table = new AtomicReference<>(init());
+
+void refresh(RoutingTable newTable) {
+    table.set(newTable);              // 整份替换：别的线程要么看到旧的、要么看到新的
+}
+RoutingTable snapshot = table.get();  // 一次拿到一致视图
+```
+
+⚠️ **前提：被封装的类必须不可变**（`final` 字段 / `record`）。若换成新引用后还有线程在改老对象内部字段，引用换了也等于没保护。**这是面试官最爱钉的点。**
+
+**② 状态机迁移（CAS + 重试循环）**
+
+```java
+// 连接状态 INIT → CONNECTING → READY，谁成功谁负责发起连接
+boolean moved = state.compareAndSet(INIT, CONNECTING);
+```
+
+等价于“只允许一个线程做某件事”，如只初始化一次、只触发一次补偿。
+
+**③ 无锁数据结构的头指针**（Treiber 栈、Michael-Scott 队列）
+
+```java
+do {
+    Node old = top.get();
+    newNode.next = old;                    // 先接线
+} while (!top.compareAndSet(old, newNode));  // 再抢发布，失败重试
+```
+
+**④ 避免重复昂贵计算（缓存占位）**：先 CAS 占坑，抢到的线程去算，没抢到的读缓存——比 synchronized 包住整段计算更轻。
+
+**补充**：ABA 场景换 `AtomicStampedReference`（带版本戳）；只保护单个字段可用 `AtomicReferenceFieldUpdater` / `VarHandle`，避免每个对象多包一层。
+
+> 面试话术：AtomicReference 解决的是“单个引用原子替换”。所以我把多字段的复合状态封成**不可变对象整体换**——读方拿到一致快照，写方一次 CAS 完成状态迁移或整表刷新，粒度比锁更细。关键是对象必须 immutable。
 
 
 
@@ -1643,7 +1843,7 @@ CAS虽然很高效解决了原子操作问题，但是CAS仍然存在问题：
 
 HotSpot虚拟机对象的对象头部分包括两类信息。第一类是用于存储对象自身的运行时数据，如哈希码（HashCode）、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等，这部分数据的长度在32位和64位的虚拟机（未开启压缩指针）中分别为32个比特和64个比特，官方称它为“Mark Word”。例如在32位的HotSpot虚拟机中，**如对象未被同步锁锁定的状态下，Mark Word的32个比特存储空间中的25个比特用于存储对象哈希码**，**4个比特用于存储对象分代年龄（存储内容）**，**2个比特用于存储锁标志位**，**1个比特固定为0**。在其他状态（轻量级锁定、重量级锁定、GC标记、可偏向）[1]下对象的存储内容如表2-1所示。
 
-![image-20220330222811027](https://yu-xiong-yu.gitee.io/typora-img/Img/202203302228194.png)
+![image-20220330222811027](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/202203302228194.png)
 
 
 
@@ -1761,6 +1961,24 @@ Sync是AQS的一个子类，这种结构在CountDownLatch、ReentrantLock、Sema
 ​	
 
 
+
+
+
+#### AQS 的三个核心部件（补：面试串联说法）
+
+AQS = **volatile state + CAS 抢占 + CLH 变体队列排队**
+
+| 部件 | 实现 | 作用 |
+|---|---|---|
+| **state（同步状态）** | volatile int | 语义由子类定义：ReentrantLock 里 0=没人锁、1=锁了、2=重入一次；CountDownLatch 里=剩余计数 |
+| **CAS 抢状态** | `compareAndSetState(0, 1)` | 抢锁 = 把 state 从 0 改成 1，成功者获得资源——这就是 CAS 的主战场 |
+| **CLH 变体队列** | 双向链表，节点封装线程引用 + 等待状态 | 抢不到的线程打包成 Node 入队，`LockSupport.park()` 挂起；前驱释放时 `unpark` 唤醒后继 |
+
+**公平 vs 非公平**：非公平锁（默认）新来的线程先插队 CAS 一次，抢到就成功，抢不到才排队——省了挂起/唤醒，吞吐更高；公平锁严格按队列顺序。
+
+**面试串联（把 CAS 开销、AQS、锁原理一次答穿）**：
+
+> AQS = volatile state + CAS 抢占 + 队列排队。CAS 负责“抢”，队列负责“抢不到的怎么办”——抢不到就 park 挂起，等前驱释放再唤醒。所以 AQS 是 **CAS（乐观）+ 挂起（悲观）的结合体**，正是为了解决纯 CAS 在高竞争下空转烧 CPU 的问题。
 
 
 
@@ -1906,6 +2124,66 @@ Thread.Sleep(0)的作用，就是“**触发操作系统立刻重新进行一次
 
 # 拓展知识
 
+## Redis 事务与原子性（延伸：和 CAS 的对比）
+
+### Spring 里的 MULTI/EXEC 编程式事务是什么意思
+
+```java
+@Test
+public void testTransactional() {
+    Object obj = redisTemplate.execute(new SessionCallback() {
+        @Override
+        public Object execute(RedisOperations operations) throws DataAccessException {
+            String redisKey = "test:tx";
+            operations.multi();                                   // 开启事务，后续命令入队
+            operations.opsForSet().add(redisKey, "zhangsan");
+            operations.opsForSet().add(redisKey, "lisi");
+            operations.opsForSet().add(redisKey, "wangwu");
+            System.out.println(operations.opsForSet().members(redisKey));  // 打印 null！
+            return operations.exec();                             // 一次性原子执行，返回结果集
+        }
+    });
+    System.out.println(obj);
+}
+```
+
+- `multi()` 之后命令不再立即执行，而是进入服务端**队列**，返回值只是 `QUEUED`
+- 中间那句 `members()` 打印出来是 **null**——**事务内的读命令也被排队了，读不到中间结果**，在事务里是“盲写”（经典面试细节）
+- `exec()` 把队列里的命令**一次性、原子地**执行完
+- **为什么必须用 SessionCallback**：MULTI 状态绑定在**连接**上，而 RedisTemplate 每次操作可能拿不同连接；出了 SessionCallback 作用域连接就还回池了，事务状态全丢
+
+### Redis 事务的三个真相
+
+1. **没有回滚**：EXEC 时某条命令运行时出错（如对 String 做 INCR），**其余命令照常生效**，不像关系型数据库；只有语法错误才整个队列拒绝（Redis 2.6.5+）
+2. **隔离性靠单线程**：EXEC 期间命令串行执行，天然不被插队——这就是它“原子”的全部含义
+3. **没有条件逻辑**：事务里不能“先读再决定怎么写”，因为读也进队列了
+
+### 更好的方式：Lua 脚本
+
+| 方案 | 原子性 | 条件逻辑 | 能读中间结果 | 网络往返 |
+|---|---|---|---|---|
+| MULTI/EXEC | ✅ | ❌ | ❌ | 多次 |
+| **Lua (EVAL)** | ✅（脚本期间不执行其他命令） | ✅ | ✅ | 1 次 |
+| WATCH + MULTI | 乐观锁 CAS，需重试 | ✅（靠重试） | ✅ | 多次 |
+
+- **Lua 是正解**：脚本执行期间独占命令执行，能做“检查-决策-修改”的原子逻辑，还省网络往返。双层限流（分钟+天配额）就是一个 Lua 里先判后增、超限 DECR 回滚——**用脚本逻辑补偿了 Redis 没有回滚这个缺陷**
+- **WATCH 是另一条路**：`WATCH key` 后若 EXEC 前该 key 被别的客户端改了，EXEC 返回 null，客户端重试——乐观锁，适合低冲突场景；高并发下冲突重试会放大压力
+
+> 一句话总结：**MULTI/EXEC 是“打包”，Lua 是“打包 + 逻辑 + 回滚补偿”**。这和 Java 里 `synchronized`（悲观、阻塞）与 CAS（乐观、重试）的取舍是同一套思路。
+
+
+
+## Redis 原子性 vs Java CAS 对照
+
+| 维度 | Java CAS | Redis Lua |
+|---|---|---|
+| 原子性来源 | CPU `lock cmpxchg` + MESI 缓存一致性 | Redis 单线程串行执行脚本 |
+| 失败行为 | 返回 false，外层自旋重试 | 由脚本自己决定（返回值/回滚逻辑） |
+| 跨变量 | 需 AtomicReference 装不可变对象 | 脚本内天然可操作多个 key |
+| 适用 | 单机内存、低冲突 | 跨进程共享状态、需条件逻辑 |
+
+
+
 **Lombok注解介绍**
 
 https://blog.51cto.com/u_15191078/2755758
@@ -1922,7 +2200,7 @@ Gradle和Maven都是项目自动构建工具，将项目中的依赖jar与编译
 
 ## 操作系统
 
-![程序与系统调用关系图](https://yu-xiong-yu.gitee.io/typora-img/Img/%E7%A8%8B%E5%BA%8F%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%85%B3%E7%B3%BB%E5%9B%BE-1637548616732.jpeg)
+![程序与系统调用关系图](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/%E7%A8%8B%E5%BA%8F%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E5%85%B3%E7%B3%BB%E5%9B%BE-1637548616732.jpeg)
 
 ### 并发和并行的区别
 
@@ -2027,7 +2305,7 @@ Linux是一个多用户操作系统,在同一时间会有许多的用户在争�
 
 还可以加一个**描述进程没有占⽤实际的物理内存空间的情况，这个状态就是挂起状态**。
 
-![image-20211030123618643](https://yu-xiong-yu.gitee.io/typora-img/Img/image-20211030123618643.png)
+![image-20211030123618643](https://yx-typora-img-1306943318.cos.ap-guangzhou.myqcloud.com/img/image-20211030123618643.png)
 
 #### 进程的控制结构（PCB）
 
